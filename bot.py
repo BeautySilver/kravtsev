@@ -3,28 +3,26 @@ import telebot
 from telebot import types
 import os
 
-
 token = '978400572:AAExdSjEBoV8DH55G5ypRLvNBf5Zq0U5j9o'
 bot = telebot.TeleBot(token)
 
 users = {}
 keyboard_for_sex = types.ReplyKeyboardMarkup(True, True)
-keyboard_for_sex.row('Ã')
-keyboard_for_sex.row('∆')
+keyboard_for_sex.row('М')
+keyboard_for_sex.row('Ж')
 keyboard_for_sex_change = types.ReplyKeyboardMarkup(True, True)
-keyboard_for_sex_change.row('Ã')
-keyboard_for_sex_change.row('∆')
-keyboard_for_sex_change.row('Õ‡Á‡‰')
+keyboard_for_sex_change.row('М')
+keyboard_for_sex_change.row('Ж')
+keyboard_for_sex_change.row('Назад')
 
 main_menu_keyboard = types.InlineKeyboardMarkup()
-change_name = types.InlineKeyboardButton(text='»ÁÏÂÌËÚ¸ ËÏˇ', callback_data='change_name')
-change_sex = types.InlineKeyboardButton(text='»ÁÏÂÌËÚ¸ ÔÓÎ', callback_data='change_sex')
-change_age = types.InlineKeyboardButton(text='»ÁÏÂÌËÚ¸ ‚ÓÁ‡ÒÚ', callback_data='change_age')
+change_name = types.InlineKeyboardButton(text='Изменить имя', callback_data='change_name')
+change_sex = types.InlineKeyboardButton(text='Изменить пол', callback_data='change_sex')
+change_age = types.InlineKeyboardButton(text='Изменить возраст', callback_data='change_age')
 main_menu_keyboard.add(change_name, change_sex, change_age)
 
 return_to_main = types.InlineKeyboardMarkup()
-return_to_main.add(types.InlineKeyboardButton(text='Õ‡Á‡‰', callback_data='return_to_main'))
-
+return_to_main.add(types.InlineKeyboardButton(text='Назад', callback_data='return_to_main'))
 
 app = Flask(__name__)
 
@@ -32,24 +30,24 @@ app = Flask(__name__)
 @bot.message_handler(commands=['start'])
 def start_handler(message):
     if message.from_user.id not in users:
-        bot.send_message(message.from_user.id, 'hello')
-        users.update({message.from_user.id:{'name':None, 'sex':None, 'age':None, 'changing':None}})
+        bot.send_message(message.from_user.id, 'Привет! Введи своё имя.')
+        users.update({message.from_user.id: {'name': None, 'sex': None, 'age': None, 'changing': None}})
 
 
 @bot.message_handler(commands=['menu'])
 def menu_handler(message):
-    bot.send_message(message.from_user.id, '√Î‡‚ÌÓÂ ÏÂÌ˛', reply_markup=main_menu_keyboard)
+    bot.send_message(message.from_user.id, 'Главное меню', reply_markup=main_menu_keyboard)
 
 
 @bot.message_handler(content_types=['text'])
 def text_handler(message):
     if users[message.from_user.id]['name'] is None:
         users[message.from_user.id]['name'] = message.text
-        bot.send_message(message.from_user.id, '“ÂÔÂ¸ ‚˚·ÂË ÔÓÎ.', reply_markup=keyboard_for_sex)
+        bot.send_message(message.from_user.id, 'Теперь выбери пол.', reply_markup=keyboard_for_sex)
 
     elif users[message.from_user.id]['sex'] is None:
         users[message.from_user.id]['sex'] = message.text
-        bot.send_message(message.from_user.id, '“ÂÔÂ¸ ‚‚Â‰Ë Ò‚ÓÈ ‚ÓÁ‡ÒÚ.')
+        bot.send_message(message.from_user.id, 'Теперь введи свой возраст.')
 
     elif users[message.from_user.id]['age'] is None:
         try:
@@ -57,15 +55,16 @@ def text_handler(message):
             menu_handler(message)
 
         except ValueError:
-            bot.send_message(message.from_user.id, '¬ÓÁ‡ÒÚ ÏÓÊÂÚ ·˚Ú¸ ÚÓÎ¸ÍÓ ˜ËÒÎÓÏ! œÓÔÓ·ÛÈ Â˘∏ ‡Á.')
+            bot.send_message(message.from_user.id, 'Возраст может быть только числом! Попробуй ещё раз.')
 
     elif users[message.from_user.id]['changing'] == 'name':
         if message.text != users[message.from_user.id]['name']:
             users[message.from_user.id]['name'] = message.text
             menu_handler(message)
         else:
-            bot.send_message(message.from_user.id, '›ÚÓ ‚‡¯Â ÔÂ‰˚‰Û˘ÂÂ ËÏˇ, ‚‚Â‰ËÚÂ ÌÓ‚ÓÂ ËÎË ‚ÂÌËÚÂÒ¸ ‚ „Î‡‚ÌÓÂ ÏÂÌ˛.',
-                                reply_markup=return_to_main)
+            bot.send_message(message.from_user.id,
+                             'Это ваше предыдущее имя, введите новое или вернитесь в главное меню.',
+                             reply_markup=return_to_main)
 
     elif users[message.from_user.id]['changing'] == 'age':
         try:
@@ -74,36 +73,36 @@ def text_handler(message):
                 menu_handler(message)
             else:
                 bot.send_message(message.from_user.id,
-                                 '›ÚÓ ‚‡¯ ÔÂ‰˚‰Û˘ËÈ ‚ÓÁ‡ÒÚ, ‚‚Â‰ËÚÂ ÌÓ‚˚È ËÎË ‚ÂÌËÚÂÒ¸ ‚ „Î‡‚ÌÓÂ ÏÂÌ˛.',
+                                 'Это ваш предыдущий возраст, введите новый или вернитесь в главное меню.',
                                  reply_markup=return_to_main)
 
         except ValueError:
-            bot.send_message(message.from_user.id, '¬ÓÁ‡ÒÚ ÏÓÊÂÚ ·˚Ú¸ ÚÓÎ¸ÍÓ ˜ËÒÎÓÏ! œÓÔÓ·ÛÈ Â˘∏ ‡Á.')
+            bot.send_message(message.from_user.id, 'Возраст может быть только числом! Попробуй ещё раз.')
 
     elif users[message.from_user.id]['changing'] == 'sex':
-        if message.text == 'Õ‡Á‡‰':
+        if message.text == 'Назад':
             users[message.from_user.id]['changing'] = None
             menu_handler(message)
         elif message.text != users[message.from_user.id]['sex']:
             users[message.from_user.id]['name'] = message.text
 
         else:
-            bot.send_message(message.from_user.id, '›ÚÓ ‚‡¯ ÔÂ‰˚‰Û˘ËÈ ÔÓÎ, ‚˚·ÂËÚÂ ÌÓ‚˚È ËÎË ‚ÂÌËÚÂÒ¸ ‚ „Î‡‚ÌÓÂ ÏÂÌ˛.',
-                                reply_markup=keyboard_for_sex_change)
+            bot.send_message(message.from_user.id,
+                             'Это ваш предыдущий пол, выберите новый или вернитесь в главное меню.',
+                             reply_markup=keyboard_for_sex_change)
 
 
 @bot.callback_query_handler(func=lambda call: True)
 def main_menu(call):
     if call.data == 'change_name':
-        bot.send_message(call.from_user.id, '¬‚Â‰ËÚÂ ÌÓ‚ÓÂ ËÏˇ', reply_markup=return_to_main)
+        bot.send_message(call.from_user.id, 'Введите новое имя', reply_markup=return_to_main)
         users[call.from_user.id]['changing'] = 'name'
-
     elif call.data == 'change_sex':
-        bot.send_message(call.from_user.id, '¬˚·ÂËÚÂ ÌÓ‚˚È ÔÓÎ', reply_markup=keyboard_for_sex_change)
+        bot.send_message(call.from_user.id, 'Выберите новый пол', reply_markup=keyboard_for_sex_change)
         users[call.from_user.id]['changing'] = 'sex'
 
     elif call.data == 'change_age':
-        bot.send_message(call.from_user.id, '¬‚Â‰ËÚÂ ÌÓ‚˚È ‚ÓÁ‡ÒÚ', reply_markup=return_to_main)
+        bot.send_message(call.from_user.id, 'Введите новый возраст', reply_markup=return_to_main)
         users[call.from_user.id]['changing'] = 'age'
 
     elif call.data == 'return_to_main':
@@ -130,7 +129,7 @@ def get_message():
 @app.route("/")
 def webhook():
     bot.remove_webhook()
-    bot.set_webhook(url='https://glacial-springs-03014.herokuapp.com/ ' + token)
+    bot.set_webhook(url='https://glacial-springs-03014.herokuapp.com/' + token)
     return "!", 200
 
 
