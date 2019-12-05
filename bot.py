@@ -130,7 +130,7 @@ def get_message():
 @app.route("/")
 def webhook():
     bot.remove_webhook()
-    bot.set_webhook(url='https://momentumtestkravtsev.herokuapp.com/' + token)
+    bot.set_webhook(url='https://glacial-springs-03014.herokuapp.com/ ' + token)
     return "!", 200
 
 
