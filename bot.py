@@ -32,7 +32,7 @@ app = Flask(__name__)
 @bot.message_handler(commands=['start'])
 def start_handler(message):
     if message.from_user.id not in users:
-        bot.send_message(message.from_user.id, 'œË‚ÂÚ! ¬‚Â‰Ë Ò‚Ó∏ ËÏˇ.')
+        bot.send_message(message.from_user.id, 'hello')
         users.update({message.from_user.id:{'name':None, 'sex':None, 'age':None, 'changing':None}})
 
 
