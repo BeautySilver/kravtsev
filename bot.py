@@ -128,8 +128,8 @@ def get_message():
 
 @app.route("/")
 def webhook():
-
-    bot.set_webhook(url='https://glacial-springs-03014.herokuapp.com/' + token)
+    bot.remove_webhook()
+    bot.set_webhook(url='https://glacial-springs-03014.herokuapp.com/'+'bot'+ token)
     return "!", 200
 
 
