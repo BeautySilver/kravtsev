@@ -129,7 +129,7 @@ def get_message():
 @app.route("/")
 def webhook():
     bot.remove_webhook()
-    bot.set_webhook(url='https://glacial-springs-03014.herokuapp.com/'+'bot'+ token)
+    bot.set_webhook(url='https://glacial-springs-03014.herokuapp.com/' + 'bot' + token)
     return "!", 200
 
 
@@ -140,4 +140,4 @@ def send_message():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.environ.get('PORT', 5000)))
+    app.run(host="10.16.206.35", port=int(os.environ.get('PORT', 5000)))
