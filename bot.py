@@ -136,7 +136,7 @@ def webhook():
 @app.route('/send_message', methods=['POST'])
 def send_message():
     send_to_all(request.form['message'])
-    return redirect(url_for('index'))
+    return redirect(url_for('admin'))
 
 
 if __name__ == "__main__":
